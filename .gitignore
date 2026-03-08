@@ -7,3 +7,4 @@ templates/
 *.mov
 *.avi
 .DS_Store
+.vercel

@@ -25,7 +25,7 @@ Apply templates to all frames, crop each region, and use OpenAI Vision to read t
 ## Quick Start
 
 ```bash
-git clone https://github.com/billpereira/progressive-context.git
+git clone https://github.com/wpereira22/progressive-context.git
 cd progressive-context
 npm install
 cp .env.example .env

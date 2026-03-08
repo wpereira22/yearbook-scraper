@@ -6,7 +6,7 @@
 
 Born from a real problem: extracting 412 individual yearbook portraits from a 1-hour MP4 slideshow of scanned pages, naming each one, and printing them as name cards for a 50th high school reunion.
 
-[Read the full story: *Bridges You Cross Once*](https://interactive-blog-sage.vercel.app/progressive-context/)
+[Read the full story: *Bridges You Cross Once*](https://interactive-blog-sage.vercel.app/bridges/)
 
 ## The Three Layers
 

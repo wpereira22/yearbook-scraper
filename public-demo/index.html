@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yearbook Scraper</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <h1>Yearbook Scraper</h1>
+      <p class="subtitle">Extract named portraits from video slideshows.</p>
+    </header>
+
+    <!-- Step Navigation -->
+    <nav class="steps">
+      <button class="step-btn active" data-step="1">
+        <span class="step-num">1</span>
+        <span class="step-label">Grab Frames</span>
+      </button>
+      <span class="step-arrow">&rarr;</span>
+      <button class="step-btn" data-step="2">
+        <span class="step-num">2</span>
+        <span class="step-label">Map Templates</span>
+      </button>
+      <span class="step-arrow">&rarr;</span>
+      <button class="step-btn" data-step="3">
+        <span class="step-num">3</span>
+        <span class="step-label">Extract</span>
+      </button>
+    </nav>
+
+    <!-- Step 1: Frame Grabber -->
+    <section class="panel" id="step-1">
+      <div class="panel-header">
+        <h2>Frame Grabber</h2>
+        <p>Load a video, scrub through it, and grab clean frames between transitions.</p>
+      </div>
+
+      <!-- File upload area (styled as a drop zone) -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-content">
+          <div class="drop-icon">&#9654;</div>
+          <p>Drop an MP4 here or <label for="video-input" class="file-label">choose file</label></p>
+          <input type="file" id="video-input" accept="video/*" hidden>
+        </div>
+      </div>
+
+      <!-- Video player (hidden until file loaded) -->
+      <div class="video-workspace" id="video-workspace" style="display:none">
+        <div class="player-window">
+          <div class="player-titlebar">
+            <div class="player-dots"><span></span><span></span><span></span></div>
+            <div class="player-title" id="video-title">video.mp4</div>
+          </div>
+          <div class="player-viewport">
+            <video id="video-el" muted></video>
+            <canvas id="frame-canvas" style="display:none"></canvas>
+          </div>
+          <div class="player-controls">
+            <button id="play-btn" class="ctrl-btn">&#9654;</button>
+            <input type="range" id="scrub-bar" min="0" max="1000" value="0" class="scrub-bar">
+            <span id="time-display" class="time-display">0:00 / 0:00</span>
+          </div>
+        </div>
+
+        <div class="grab-controls">
+          <button id="grab-btn" class="action-btn">Grab Frame</button>
+          <button id="step-back-btn" class="ctrl-btn small">&#9664; 1s</button>
+          <button id="step-fwd-btn" class="ctrl-btn small">1s &#9654;</button>
+          <span id="grab-count" class="grab-count">0 frames grabbed</span>
+        </div>
+
+        <!-- Grabbed frames collection -->
+        <div class="grabbed-frames" id="grabbed-frames"></div>
+      </div>
+
+      <div class="panel-footer">
+        <button class="next-btn" data-next="2" id="to-step-2" disabled>
+          Continue to Templates &rarr;
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 2: Template Builder -->
+    <section class="panel" id="step-2" style="display:none">
+      <div class="panel-header">
+        <h2>Template Builder</h2>
+        <p>Select a grabbed frame, then click and drag to draw rectangles over regions of interest. Create one template per layout type.</p>
+      </div>
+
+      <!-- Template controls -->
+      <div class="template-controls">
+        <div class="template-select">
+          <label>Template name:</label>
+          <input type="text" id="template-name" value="layout_1" class="text-input" placeholder="e.g. grid, staggered">
+        </div>
+        <div class="frame-select">
+          <label>Frame:</label>
+          <select id="frame-select" class="select-input"></select>
+        </div>
+      </div>
+
+      <!-- Canvas workspace -->
+      <div class="canvas-workspace">
+        <div class="player-window">
+          <div class="player-titlebar">
+            <div class="player-dots"><span></span><span></span><span></span></div>
+            <div class="player-title">Template Builder</div>
+          </div>
+          <div class="canvas-container" id="canvas-container">
+            <canvas id="template-canvas"></canvas>
+          </div>
+        </div>
+        <div class="template-info">
+          <span id="rect-count">0 regions drawn</span>
+          <span id="coords-display"></span>
+        </div>
+      </div>
+
+      <!-- Template list -->
+      <div class="template-list">
+        <h3>Saved Templates</h3>
+        <div id="template-list-items"></div>
+        <div class="template-actions">
+          <button id="save-template-btn" class="action-btn">Save Template</button>
+          <button id="clear-rects-btn" class="ctrl-btn">Clear Rectangles</button>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <button class="back-btn" data-prev="1">&larr; Back</button>
+        <button class="next-btn" data-next="3" id="to-step-3" disabled>
+          Continue to Extract &rarr;
+        </button>
+      </div>
+    </section>
+
+    <!-- Step 3: Extraction Pipeline (demo — no server) -->
+    <section class="panel" id="step-3" style="display:none">
+      <div class="panel-header">
+        <h2>Extraction Pipeline</h2>
+        <p>Crop each region from every frame using your templates, then use AI vision to read text and name the files.</p>
+      </div>
+
+      <div class="demo-notice">
+        <div class="demo-notice-icon">&#9888;</div>
+        <div>
+          <p><strong>This step requires the full version.</strong></p>
+          <p>The extraction pipeline uses OpenAI Vision to OCR names from cropped portraits. It needs a local server and your own API key.</p>
+          <p style="margin-top: 0.75rem">
+            <a href="https://github.com/wpereira22/yearbook-scraper" target="_blank" class="demo-cta">Download from GitHub &rarr;</a>
+          </p>
+          <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--ink-faded)">Clone it, add your OpenAI key, run <code style="font-family: var(--font-mono); background: rgba(0,0,0,0.06); padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.75rem">npm start</code> — and all three layers work.</p>
+        </div>
+      </div>
+
+      <!-- Still show the mapping UI so people can see what it looks like -->
+      <div class="pipeline-config" style="opacity: 0.4; pointer-events: none;">
+        <div class="config-row">
+          <label>OCR Prompt:</label>
+          <textarea id="ocr-prompt" class="text-input" rows="2" disabled>Read the name text visible in this image. Return only the name, nothing else. If no name is visible, return "unknown".</textarea>
+        </div>
+        <div class="config-row">
+          <label>Match frames to templates:</label>
+          <div id="frame-template-mapping"></div>
+        </div>
+      </div>
+
+      <div class="pipeline-run" style="opacity: 0.4; pointer-events: none;">
+        <button id="run-pipeline-btn" class="action-btn large" disabled>Run Pipeline</button>
+      </div>
+
+      <div class="pipeline-progress" id="pipeline-progress" style="display:none">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-status" id="progress-status"></div>
+      </div>
+      <div class="results-grid" id="results-grid"></div>
+      <div class="pipeline-download" id="pipeline-download" style="display:none">
+        <button id="download-btn" class="action-btn large">Download All (ZIP)</button>
+        <span id="result-count"></span>
+      </div>
+
+      <div class="panel-footer">
+        <button class="back-btn" data-prev="2">&larr; Back</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Yearbook Scraper &mdash; <a href="#" target="_blank">Read the story</a> &mdash; <a href="https://github.com/wpereira22/yearbook-scraper" target="_blank">GitHub</a></p>
+      <p class="footer-sub">Built for a 50th reunion. Used once. Worked perfectly.</p>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

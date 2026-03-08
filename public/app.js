@@ -1,4 +1,4 @@
-// Progressive Context — Frame Builder
+// Yearbook Scraper
 // Client-side logic for grabbing frames, drawing templates, and extracting regions via OCR.
 
 (function () {

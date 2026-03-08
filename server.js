@@ -76,5 +76,5 @@ app.post('/api/ocr', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Progressive Context server running at http://localhost:${PORT}`);
+  console.log(`Yearbook Scraper running at http://localhost:${PORT}`);
 });

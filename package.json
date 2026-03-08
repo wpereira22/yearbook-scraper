@@ -1,7 +1,7 @@
 {
-  "name": "progressive-context",
+  "name": "yearbook-scraper",
   "version": "1.0.0",
-  "description": "Extract named images from video slideshows using progressive context — build small tools that feed the next.",
+  "description": "Extract named portraits from video slideshows of scanned yearbook pages.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

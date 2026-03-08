@@ -1,12 +1,12 @@
-# Progressive Context
+# Yearbook Scraper
 
-> Build small tools that feed the next.
+> Extract named portraits from video slideshows of scanned yearbook pages.
 
-**Progressive Context** is a web-based frame builder for extracting named images from video slideshows. It breaks the problem into three disposable layers — each one's output becomes the next one's input.
+**Yearbook Scraper** is a web tool that pulls individual, named portrait images out of video slideshows. It breaks the problem into three layers — each one's output becomes the next one's input.
 
 Born from a real problem: extracting 412 individual yearbook portraits from a 1-hour MP4 slideshow of scanned pages, naming each one, and printing them as name cards for a 50th high school reunion.
 
-[Read the full story](#)
+[Read the full story: *Bridges You Cross Once*](#)
 
 ## The Three Layers
 
@@ -16,17 +16,17 @@ Load a video, scrub through it frame by frame, and grab clean screenshots betwee
 
 ### Layer 2 — Template Builder
 
-Draw rectangles over regions of interest on your grabbed frames. Define where faces (or any elements) appear on each page layout. Export as reusable templates.
+Draw rectangles over face positions on your grabbed frames. Define where portraits appear on each page layout. Save as reusable templates.
 
 ### Layer 3 — Extraction Pipeline
 
-Apply templates to all frames, crop each region, and use OpenAI Vision to read text (OCR). Download named files as a ZIP.
+Apply templates to all frames, crop each face, and use OpenAI Vision to read the name text below each portrait. Download named files as a ZIP.
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/wpereira22/progressive-context.git
-cd progressive-context
+git clone https://github.com/wpereira22/yearbook-scraper.git
+cd yearbook-scraper
 npm install
 cp .env.example .env
 # Add your OpenAI API key to .env
@@ -55,21 +55,18 @@ The tool runs entirely in the browser, with a minimal Node.js server that proxie
 - **OCR**: OpenAI GPT-4o Vision API (server-side proxy)
 - **Download**: JSZip for client-side ZIP generation
 
-## The Idea
+## Why Three Layers?
 
-Most problems don't need a product. They need a bridge — something quick, disposable, built to cross a specific gap once.
+A single prompt can't reliably do all of this at once. The video has fading transitions between pages, multiple page layouts, and names printed in tiny serif type. Asking an AI to handle all of that produces 847 blurry files named `face_001.jpg`.
 
-Progressive context means: instead of writing one perfect prompt, you build small scaffolding tools. Each tool solves one sub-problem and produces structured output for the next. The approach works because:
+Instead, you build small scaffolding tools:
 
-- It breaks hard problems into solvable steps
-- Each layer gives the AI concrete constraints (not guesses)
-- None of the code needs to scale or be maintained
-- The result is better than any single prompt could produce
+1. **You** pick the clean frames (10 min)
+2. **You** mark where faces are on each layout (3 min)
+3. **The machine** crops and reads names using your templates (30 sec)
+
+Each layer gives the next one concrete structure to work with. Total time: ~15 minutes.
 
 ## License
 
 MIT
-
----
-
-*You don't optimize a desire. You build toward it.*
